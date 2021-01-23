@@ -32,4 +32,14 @@ public class WebMapping {
         model.put("name", this.message);
         return "welcome";
     }
+
+    @GetMapping("/main.css")
+    public String getMainCss(Map<String, Object> model) {
+        return "css/main_css";
+    }
+
+    @GetMapping("/main.js")
+    public String getMainJs(Map<String,Object> model) {
+        return "js/main_js";
+    }
 }
