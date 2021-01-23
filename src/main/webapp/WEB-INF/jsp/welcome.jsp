@@ -15,6 +15,7 @@
 	JSTL URL: ${url}
 	<br>
 	Message: ${message}
+	Name: ${name}
 </body>
 
 </html>
