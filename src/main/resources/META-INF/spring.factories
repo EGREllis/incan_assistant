@@ -1,0 +1,1 @@
+org.springframework.boot.SpringApplicationRunListener=net.assistant.controller.listener.SpringListener

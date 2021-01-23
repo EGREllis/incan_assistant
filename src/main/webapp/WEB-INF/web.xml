@@ -3,6 +3,12 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
          http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
+    <listener>
+        <listener-class>
+            net.assistant.controller.listener.BrowserOpenner
+        </listener-class>
+    </listener>
+
     <servlet>
         <servlet-name>hello</servlet-name>
         <servlet-class>net.assistant.view.servlet.HelloServlet</servlet-class>

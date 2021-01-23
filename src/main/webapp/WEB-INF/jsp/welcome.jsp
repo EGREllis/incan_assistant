@@ -11,6 +11,13 @@
         <script src="main.js"></script>
     </head>
 <body>
+    <table>
+        <tr><td></td><td colspan="2">Temple 5</td><td></td><td rowspan="3">Card 1</td><td rowspan="3">Card 2</td></tr>
+        <tr><td colspan="2">Temple 3</td><td colspan="2">Temple 4</td></tr>
+        <tr><td colspan="2">Temple 1</td><td colspan="2">Temple 2</td></tr>
+    </table>
+
+    <!--
 	<c:url value="/resources/text.txt" var="url"/>
 	<spring:url value="/resources/text.txt" htmlEscape="true" var="springUrl" />
 	Spring URL: ${springUrl} at ${time}
@@ -19,6 +26,7 @@
 	<br>
 	Message: ${message}
 	Name: ${name}
+	-->
 </body>
 
 </html>
