@@ -13,11 +13,11 @@ import java.util.Map;
 public class DeckTest {
     @Test
     public void when_deckCreated_then_deckIsExpectedSize() {
-        Deck deckRound1 = new Deck(1, Collections.emptySet());
-        Deck deckRound2 = new Deck(2, Collections.emptySet());
-        Deck deckRound3 = new Deck(3, Collections.emptySet());
-        Deck deckRound4 = new Deck(4, Collections.emptySet());
-        Deck deckRound5 = new Deck(5, Collections.emptySet());
+        Deck deckRound1 = new DeckImpl(1, Collections.emptySet());
+        Deck deckRound2 = new DeckImpl(2, Collections.emptySet());
+        Deck deckRound3 = new DeckImpl(3, Collections.emptySet());
+        Deck deckRound4 = new DeckImpl(4, Collections.emptySet());
+        Deck deckRound5 = new DeckImpl(5, Collections.emptySet());
 
         assertThat(deckRound1.getSize(), equalTo(31));
         assertThat(deckRound2.getSize(), equalTo(32));
@@ -50,7 +50,7 @@ public class DeckTest {
 
         Map<Integer, Integer> freq = new HashMap<>();
 
-        Deck deck = new Deck(1, Collections.emptySet());
+        Deck deck = new DeckImpl(1, Collections.emptySet());
         for (int i = 0; i < deck.getSize(); i++) {
             int card = deck.drawCard();
             int cFrequency = 1;
@@ -91,7 +91,7 @@ public class DeckTest {
 
     @Test
     public void when_deckInspected_givenRoundZeroNoArtifactPicked_then_classificationMatchesExpectations() {
-        Deck deck = new Deck(1, Collections.emptySet());
+        Deck deck = new DeckImpl(1, Collections.emptySet());
 
         int nGemCard = 0;
         int nHazardCard = 0;
@@ -100,14 +100,18 @@ public class DeckTest {
         int size = deck.getSize();
         for (int i = 0; i < size; i++) {
             int card = deck.drawCard();
-            if (deck.isGem(card)) {
-                nGemCard++;
-            }
-            if (deck.isHazard(card)) {
-                nHazardCard++;
-            }
-            if (deck.isArtifact(card)) {
-                nArtifact++;
+            switch (deck.getCardType(card)) {
+                case GEM:
+                    nGemCard++;
+                    break;
+                case HAZARD:
+                    nHazardCard++;
+                    break;
+                case ARTIFACT:
+                    nArtifact++;
+                    break;
+                default:
+                    throw new IllegalArgumentException("We should never reach this.");
             }
         }
 
@@ -119,13 +123,13 @@ public class DeckTest {
 
     @Test
     public void when_deckSummed_given_roundOne_then_sumMatchesExpectations() {
-        Deck deck = new Deck(1, Collections.emptySet());
+        Deck deck = new DeckImpl(1, Collections.emptySet());
 
         int size = deck.getSize();
         int gemSum = 0;
         for (int i = 0; i < size; i++) {
             int card = deck.drawCard();
-            if (deck.isGem(card)) {
+            if (CardType.GEM.equals(deck.getCardType(card))) {
                 gemSum += deck.getGemValue(card);
             }
         }
@@ -135,12 +139,12 @@ public class DeckTest {
 
     @Test
     public void when_deckCreated_given_round2_then_twoArtifactsPresent() {
-        Deck deck = new Deck(2, Collections.emptySet());
+        Deck deck = new DeckImpl(2, Collections.emptySet());
 
         int nArtifact = 0;
         for (int i = 0; i < deck.getSize(); i++) {
             int card = deck.drawCard();
-            if (deck.isArtifact(card)) {
+            if (CardType.ARTIFACT.equals(deck.getCardType(card))) {
                 nArtifact++;
             }
         }
@@ -150,12 +154,12 @@ public class DeckTest {
 
     @Test
     public void when_deckCreated_given_round2And1ArtifactTaken_then_oneDistinctArtifactPresent() {
-        Deck deck = new Deck(2, Collections.singleton(21));
+        DeckImpl deck = new DeckImpl(2, Collections.singleton(21));
 
         int nArtifact = 0;
         for (int i = 0; i < deck.getSize(); i++) {
             int card = deck.drawCard();
-            if (deck.isArtifact(card)) {
+            if (CardType.ARTIFACT.equals(deck.getCardType(card))) {
                 nArtifact++;
                 assertThat(card, not(equalTo(21)));
             }
