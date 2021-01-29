@@ -64,5 +64,54 @@ public class RoundTest {
         assertThat(player2.getSavedArtifacts().size(), equalTo(0));
     }
 
+    @Test
+    public void when_roundExecuted_given_oneGemTwoHazards_then_withdrawnRetainsGemsAndExcavateDoesNot() {
+        when(deck.drawCard()).thenReturn(2).thenReturn(-1).thenReturn(-1);
+        when(deck.getCardType(2)).thenReturn(CardType.GEM);
+        when(deck.getCardType(-1)).thenReturn(CardType.HAZARD);
+        when(deck.getGemValue(2)).thenReturn(2);
+        when(agent1.decide(firstRound)).thenReturn(PlayerDecision.EXCAVATE);
+        when(agent2.decide(firstRound)).thenReturn(PlayerDecision.WITHDRAW);
+
+        RoundEngine roundEngine = new RoundEngineImpl();
+        RoundState finalState = roundEngine.processRound(firstRound);
+
+        assertThat(finalState.getCardsToRemove().size(), equalTo(1));
+        assertThat(finalState.getCardsToRemove().contains(-1), equalTo(true));
+        // Player that excavated
+        assertThat(player1.getTemporaryGems(), equalTo(0));
+        assertThat(player1.getSavedGems(), equalTo(0));
+        assertThat(player1.getTemporaryArtifacts().size(), equalTo(0));
+        assertThat(player1.getSavedArtifacts().size(), equalTo(0));
+        // Player that withdrew
+        assertThat(player2.getTemporaryGems(), equalTo(0));
+        assertThat(player2.getSavedGems(), equalTo(1));
+        assertThat(player2.getTemporaryArtifacts().size(), equalTo(0));
+        assertThat(player2.getSavedArtifacts().size(), equalTo(0));
+    }
+
+    @Test
+    public void when_oneArtifactTwoHazards_given_bothWithdraw_then_neitherGetsArtifact() {
+        when(deck.drawCard()).thenReturn(21).thenReturn(-1).thenReturn(-1);
+        when(deck.getCardType(21)).thenReturn(CardType.ARTIFACT);
+        when(deck.getCardType(-1)).thenReturn(CardType.HAZARD);
+        when(agent1.decide(firstRound)).thenReturn(PlayerDecision.WITHDRAW);
+        when(agent2.decide(firstRound)).thenReturn(PlayerDecision.WITHDRAW);
+
+        RoundEngine roundEngine = new RoundEngineImpl();
+        RoundState finalState = roundEngine.processRound(firstRound);
+
+        // Both players left - no cards need to be removed.
+        assertThat(finalState.getCardsToRemove().size(), equalTo(0));
+        // Both players should get nothing
+        assertThat(player1.getTemporaryGems(), equalTo(0));
+        assertThat(player1.getSavedGems(), equalTo(0));
+        assertThat(player1.getTemporaryArtifacts().size(), equalTo(0));
+        assertThat(player1.getSavedArtifacts().size(), equalTo(0));
+        assertThat(player2.getTemporaryGems(), equalTo(0));
+        assertThat(player2.getSavedGems(), equalTo(0));
+        assertThat(player2.getTemporaryArtifacts().size(), equalTo(0));
+        assertThat(player2.getSavedArtifacts().size(), equalTo(0));
+    }
 
 }

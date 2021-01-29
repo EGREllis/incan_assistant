@@ -27,6 +27,11 @@ public class RoundEngineImpl implements RoundEngine {
             // Process withdrawing players
             processWithdrawl(visibleCards, remainingGems, playersInRound, deck, decisions, round);
 
+            // If everyone left, the round is over.
+            if (playersInRound.size() == 0) {
+                break;
+            }
+
             // Consult agents for decisions
             decisions = collectDecisions(playersInRound, round);
 
@@ -128,12 +133,15 @@ public class RoundEngineImpl implements RoundEngine {
             default:
                 // Multiple people leave
                 int perPlayerTake = 0;
-                for (int i = visibleCards.size()-1; i >= 0; i++) {
-                    int gemsOnCard = remainingGems.get(i);
-                    int perPlayerCardTake = gemsOnCard / decisions.withdraw.size();
-                    if (perPlayerCardTake > 0) {
-                        perPlayerTake += perPlayerCardTake;
-                        remainingGems.set(i, gemsOnCard - perPlayerCardTake * decisions.withdraw.size());
+                for (int i = visibleCards.size()-1; i >= 0; i--) {
+                    // Gems are only on gem cards
+                    if (CardType.GEM.equals(deck.getCardType(visibleCards.get(i)))) {
+                        int gemsOnCard = remainingGems.get(i);
+                        int perPlayerCardTake = gemsOnCard / decisions.withdraw.size();
+                        if (perPlayerCardTake > 0) {
+                            perPlayerTake += perPlayerCardTake;
+                            remainingGems.set(i, gemsOnCard - perPlayerCardTake * decisions.withdraw.size());
+                        }
                     }
                 }
                 for (String player : decisions.withdraw) {
