@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class AgentTest {
-    private static final double TOLERANCE = 0.05;
+    private static final double TOLERANCE = 0.1;
     private static final int N_TRIALS = 1000;
 
     @Test
@@ -83,6 +83,7 @@ public class AgentTest {
     private RoundState emptyRoundState() {
         Deck deck = new DeckImpl(1, Collections.emptySet());
         Map<String, PlayerState> players = new TreeMap<>();
-        return new RoundState(deck, players, Collections.emptySet());
+        Map<String, Agent> agents = new TreeMap<>();
+        return new RoundState(deck, players, agents, Collections.emptySet());
     }
 }

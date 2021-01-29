@@ -30,6 +30,10 @@ public class DeckImpl implements Deck {
         shuffle();
     }
 
+    public int getDrawn() {
+        return drawn;
+    }
+
     public CardType getCardType(int value) {
         CardType result;
         if (isGem(value)) {
