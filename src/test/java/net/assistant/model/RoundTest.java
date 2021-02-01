@@ -167,4 +167,44 @@ public class RoundTest {
         assertThat(player2.getSavedArtifacts().size(), equalTo(0));
         assertThat(player2.getTemporaryArtifacts().size(), equalTo(0));
     }
+
+    @Test
+    public void when_threePlayers_given_twoWithdrawSameTime_then_theySplitRemainingGems() {
+        // Add the third player
+        PlayerState player3 = new PlayerState("Player3");
+        players.put("Player3", player3);
+        Agent agent3 = Mockito.mock(Agent.class);
+        agents.put("Player3", agent3);
+
+        //Test setup
+        when(deck.drawCard()).thenReturn(5).thenReturn(10).thenReturn(HAZARD_ONE).thenReturn(HAZARD_ONE);
+        when(deck.getGemValue(5)).thenReturn(5);
+        when(deck.getGemValue(10)).thenReturn(10);
+        when(deck.getCardType(5)).thenReturn(CardType.GEM);
+        when(deck.getCardType(10)).thenReturn(CardType.GEM);
+        when(deck.getCardType(HAZARD_ONE)).thenReturn(CardType.HAZARD);
+        when(agent1.decide(firstRound)).thenReturn(PlayerDecision.EXCAVATE).thenReturn(PlayerDecision.WITHDRAW);
+        when(agent2.decide(firstRound)).thenReturn(PlayerDecision.EXCAVATE).thenReturn(PlayerDecision.WITHDRAW);
+        when(agent3.decide(firstRound)).thenReturn(PlayerDecision.EXCAVATE).thenReturn(PlayerDecision.EXCAVATE).thenReturn(PlayerDecision.WITHDRAW);
+
+        RoundEngine roundEngine = new RoundEngineImpl();
+        RoundState finalState = roundEngine.processRound(firstRound);
+
+        // All players withdrew, no hazard to remove
+        assertThat(finalState.getCardsToRemove().size(), equalTo(0));
+        // Player 1 and Player 2 should get their share, and split the remainders when they left
+        assertThat(player1.getTemporaryGems(), equalTo(0));
+        assertThat(player1.getSavedGems(), equalTo(5)); // Gems: 1, 3, Withdraw: 1, 0
+        assertThat(player1.getTemporaryArtifacts().size(), equalTo(0));
+        assertThat(player1.getSavedArtifacts().size(), equalTo(0));
+        assertThat(player2.getTemporaryGems(), equalTo(0));
+        assertThat(player2.getSavedGems(), equalTo(5)); // Gems: 1, 3, Withdraw: 1, 0
+        assertThat(player2.getTemporaryArtifacts().size(), equalTo(0));
+        assertThat(player2.getSavedArtifacts().size(), equalTo(0));
+        // Player 3 retreats last, gets 1 remaining gem from card 2 (which the others blocked each other)
+        assertThat(player3.getTemporaryGems(), equalTo(0));
+        assertThat(player3.getSavedGems(), equalTo(5));
+        assertThat(player3.getTemporaryArtifacts().size(), equalTo(0));
+        assertThat(player3.getSavedArtifacts().size(), equalTo(0));
+    }
 }
