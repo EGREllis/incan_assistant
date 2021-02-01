@@ -13,6 +13,8 @@ import java.util.TreeSet;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.Mockito.*;
+import static net.assistant.model.DeckImpl.ARTIFACT_ONE;
+import static net.assistant.model.DeckImpl.HAZARD_ONE;
 
 public class RoundTest {
     private Deck deck;
@@ -44,8 +46,8 @@ public class RoundTest {
 
     @Test
     public void when_roundExecuted_given_twoHazards_then_hazardAddedToCardsToRemove() {
-        when(deck.drawCard()).thenReturn(-1).thenReturn(-1);
-        when(deck.getCardType(-1)).thenReturn(CardType.HAZARD);
+        when(deck.drawCard()).thenReturn(HAZARD_ONE).thenReturn(HAZARD_ONE);
+        when(deck.getCardType(HAZARD_ONE)).thenReturn(CardType.HAZARD);
         when(agent1.decide(firstRound)).thenReturn(PlayerDecision.WITHDRAW);
         when(agent2.decide(firstRound)).thenReturn(PlayerDecision.EXCAVATE);
 
@@ -53,7 +55,7 @@ public class RoundTest {
         RoundState finalState = roundEngine.processRound(firstRound);
 
         assertThat(finalState.getCardsToRemove().size(), equalTo(1));
-        assertThat(finalState.getCardsToRemove().contains(-1), equalTo(true));
+        assertThat(finalState.getCardsToRemove().contains(HAZARD_ONE), equalTo(true));
         assertThat(player1.getTemporaryGems(), equalTo(0));
         assertThat(player2.getTemporaryGems(), equalTo(0));
         assertThat(player1.getSavedGems(), equalTo(0));
@@ -66,9 +68,9 @@ public class RoundTest {
 
     @Test
     public void when_roundExecuted_given_oneGemTwoHazards_then_withdrawnRetainsGemsAndExcavateDoesNot() {
-        when(deck.drawCard()).thenReturn(2).thenReturn(-1).thenReturn(-1);
+        when(deck.drawCard()).thenReturn(2).thenReturn(HAZARD_ONE).thenReturn(HAZARD_ONE);
         when(deck.getCardType(2)).thenReturn(CardType.GEM);
-        when(deck.getCardType(-1)).thenReturn(CardType.HAZARD);
+        when(deck.getCardType(HAZARD_ONE)).thenReturn(CardType.HAZARD);
         when(deck.getGemValue(2)).thenReturn(2);
         when(agent1.decide(firstRound)).thenReturn(PlayerDecision.EXCAVATE);
         when(agent2.decide(firstRound)).thenReturn(PlayerDecision.WITHDRAW);
@@ -77,7 +79,7 @@ public class RoundTest {
         RoundState finalState = roundEngine.processRound(firstRound);
 
         assertThat(finalState.getCardsToRemove().size(), equalTo(1));
-        assertThat(finalState.getCardsToRemove().contains(-1), equalTo(true));
+        assertThat(finalState.getCardsToRemove().contains(HAZARD_ONE), equalTo(true));
         // Player that excavated
         assertThat(player1.getTemporaryGems(), equalTo(0));
         assertThat(player1.getSavedGems(), equalTo(0));
@@ -92,9 +94,9 @@ public class RoundTest {
 
     @Test
     public void when_oneArtifactTwoHazards_given_bothWithdraw_then_neitherGetsArtifact() {
-        when(deck.drawCard()).thenReturn(21).thenReturn(-1).thenReturn(-1);
-        when(deck.getCardType(21)).thenReturn(CardType.ARTIFACT);
-        when(deck.getCardType(-1)).thenReturn(CardType.HAZARD);
+        when(deck.drawCard()).thenReturn(ARTIFACT_ONE).thenReturn(HAZARD_ONE).thenReturn(HAZARD_ONE);
+        when(deck.getCardType(ARTIFACT_ONE)).thenReturn(CardType.ARTIFACT);
+        when(deck.getCardType(HAZARD_ONE)).thenReturn(CardType.HAZARD);
         when(agent1.decide(firstRound)).thenReturn(PlayerDecision.WITHDRAW);
         when(agent2.decide(firstRound)).thenReturn(PlayerDecision.WITHDRAW);
 
@@ -116,7 +118,7 @@ public class RoundTest {
 
     @Test
     public void when_oneGemTwoHazards_given_oneWithdrawsThenTheyGetTheRemainder() {
-        when(deck.drawCard()).thenReturn(5).thenReturn(-1).thenReturn(-1);
+        when(deck.drawCard()).thenReturn(5).thenReturn(HAZARD_ONE).thenReturn(HAZARD_ONE);
         when(deck.getCardType(5)).thenReturn(CardType.GEM);
         when(deck.getGemValue(5)).thenReturn(5);
         when(deck.getCardType(-1)).thenReturn(CardType.HAZARD);
@@ -139,4 +141,30 @@ public class RoundTest {
         assertThat(player2.getSavedArtifacts().size(), equalTo(0));
     }
 
+    @Test
+    public void when_oneArtifactTwoHazards_given_playersWithdrawAtDifferentTimes_then_firstGetsArtifact() {
+        when(deck.drawCard()).thenReturn(ARTIFACT_ONE).thenReturn(HAZARD_ONE).thenReturn(HAZARD_ONE);
+        when(deck.getCardType(ARTIFACT_ONE)).thenReturn(CardType.ARTIFACT);
+        when(deck.getCardType(HAZARD_ONE)).thenReturn(CardType.HAZARD);
+        when(agent1.decide(firstRound)).thenReturn(PlayerDecision.WITHDRAW);
+        when(agent2.decide(firstRound)).thenReturn(PlayerDecision.EXCAVATE).thenReturn(PlayerDecision.WITHDRAW);
+
+        RoundEngine roundEngine = new RoundEngineImpl();
+        RoundState finalState = roundEngine.processRound(firstRound);
+
+        // Both players withdrew, however and artifact was obtained, which needs to be removed from the next round
+        assertThat(finalState.getCardsToRemove().size(), equalTo(1));
+        assertThat(finalState.getCardsToRemove().contains(ARTIFACT_ONE), equalTo(true));
+        // First player withdrew first and keeps the artifact
+        assertThat(player1.getTemporaryGems(), equalTo(0));
+        assertThat(player1.getSavedGems(), equalTo(0));
+        assertThat(player1.getTemporaryArtifacts().size(), equalTo(0));
+        assertThat(player1.getSavedArtifacts().size(), equalTo(1));
+        assertThat(player1.getSavedArtifacts().contains(ARTIFACT_ONE), equalTo(true));
+        // Second player withdrew second and gets nothing
+        assertThat(player2.getTemporaryGems(), equalTo(0));
+        assertThat(player2.getSavedGems(), equalTo(0));
+        assertThat(player2.getSavedArtifacts().size(), equalTo(0));
+        assertThat(player2.getTemporaryArtifacts().size(), equalTo(0));
+    }
 }

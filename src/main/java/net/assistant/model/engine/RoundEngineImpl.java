@@ -18,9 +18,19 @@ public class RoundEngineImpl implements RoundEngine {
 
         // First card is not optional
         int firstCard = deck.drawCard();
-        if (CardType.GEM.equals(deck.getCardType(firstCard))) {
-            processGems(firstCard, deck, visibleCards, remainingGems, playersInRound, round);
+        switch (deck.getCardType(firstCard)) {
+            case GEM:
+                processGems(firstCard, deck, visibleCards, remainingGems, playersInRound, round);
+                break;
+            case ARTIFACT:
+            case HAZARD:
+                visibleCards.add(firstCard);
+                remainingGems.add(0);
+                break;
+            default:
+                throw new IllegalArgumentException(String.format("This branch should never be reached, but it was! %1$s"));
         }
+
 
         //TODO: Consider adding visibleCard and remainingGems in one statement at the bottom (happens in all cases)
         while (isPlayable) {
@@ -119,13 +129,14 @@ public class RoundEngineImpl implements RoundEngine {
 
                     for (int i = visibleCards.size()-1; i >= 0; i--) {
                         int visible = visibleCards.get(i);
+                        sumRemaining += remainingGems.get(i);
+                        remainingGems.set(i, 0);
                         if (CardType.ARTIFACT.equals(deck.getCardType(visible))) {
                             player.collectArtifact(visible);
+                            round.getCardsToRemove().add(visible);
                             visibleCards.remove(i);
                             remainingGems.remove(i);
                         }
-                        sumRemaining += remainingGems.get(i);
-                        remainingGems.set(i, 0);
                     }
                     player.collectGems(sumRemaining);
                     player.successfulWithdraw();
