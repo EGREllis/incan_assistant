@@ -114,4 +114,29 @@ public class RoundTest {
         assertThat(player2.getSavedArtifacts().size(), equalTo(0));
     }
 
+    @Test
+    public void when_oneGemTwoHazards_given_oneWithdrawsThenTheyGetTheRemainder() {
+        when(deck.drawCard()).thenReturn(5).thenReturn(-1).thenReturn(-1);
+        when(deck.getCardType(5)).thenReturn(CardType.GEM);
+        when(deck.getGemValue(5)).thenReturn(5);
+        when(deck.getCardType(-1)).thenReturn(CardType.HAZARD);
+        when(agent1.decide(firstRound)).thenReturn(PlayerDecision.WITHDRAW);
+        when(agent2.decide(firstRound)).thenReturn(PlayerDecision.EXCAVATE).thenReturn(PlayerDecision.WITHDRAW);
+
+        RoundEngine roundEngine = new RoundEngineImpl();
+        RoundState finalState = roundEngine.processRound(firstRound);
+
+        // Both players withdrew.
+        assertThat(finalState.getCardsToRemove().size(), equalTo(0));
+        // First player should get the remainder from
+        assertThat(player1.getTemporaryGems(), equalTo(0));
+        assertThat(player1.getSavedGems(), equalTo(3));
+        assertThat(player1.getTemporaryArtifacts().size(), equalTo(0));
+        assertThat(player1.getSavedArtifacts().size(), equalTo(0));
+        assertThat(player2.getTemporaryGems(), equalTo(0));
+        assertThat(player2.getSavedGems(), equalTo(2));
+        assertThat(player2.getTemporaryArtifacts().size(), equalTo(0));
+        assertThat(player2.getSavedArtifacts().size(), equalTo(0));
+    }
+
 }

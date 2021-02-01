@@ -24,16 +24,16 @@ public class RoundEngineImpl implements RoundEngine {
 
         //TODO: Consider adding visibleCard and remainingGems in one statement at the bottom (happens in all cases)
         while (isPlayable) {
-            // Process withdrawing players
+            // Consult agents for decisions
+            decisions = collectDecisions(playersInRound, round);
+
+            // Process withdrawing players (they are safe before the consequences of the next card)
             processWithdrawl(visibleCards, remainingGems, playersInRound, deck, decisions, round);
 
             // If everyone left, the round is over.
             if (playersInRound.size() == 0) {
                 break;
             }
-
-            // Consult agents for decisions
-            decisions = collectDecisions(playersInRound, round);
 
             // Draw card
             int card = round.getDeck().drawCard();
@@ -70,13 +70,14 @@ public class RoundEngineImpl implements RoundEngine {
         boolean isPlayable = !visibleCards.contains(card);
         if (!isPlayable) {
             round.getCardsToRemove().add(card);
+            for (String player : decisions.excavate) {
+                PlayerState state = round.getPlayers().get(player);
+                state.failedExcavate();
+            }
         }
         visibleCards.add(card);
         remainingGems.add(0);
-        for (String player : decisions.excavate) {
-            PlayerState state = round.getPlayers().get(player);
-            state.failedExcavate();
-        }
+
         return isPlayable;
     }
 
