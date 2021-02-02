@@ -14,11 +14,14 @@ public class RandomAgent implements Agent {
     @Override
     public PlayerDecision decide(RoundState roundState) {
         PlayerDecision decision;
-        if (Math.random() <= threshold) {
+        double random = Math.random();
+        if (random <= threshold) {
             decision = PlayerDecision.EXCAVATE;
         } else {
             decision = PlayerDecision.WITHDRAW;
         }
+        System.out.println(String.format("Agent (threshold:%1$s) rolled: %2$f decision: %3$s", threshold, random, decision));
+        System.out.flush();
         return decision;
     }
 

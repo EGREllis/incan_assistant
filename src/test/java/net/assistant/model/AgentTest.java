@@ -5,9 +5,7 @@ import net.assistant.model.agent.AlwaysWithdrawAgent;
 import net.assistant.model.agent.RandomAgent;
 import org.junit.Test;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class AgentTest {
     private static final double TOLERANCE = 0.1;
@@ -84,6 +82,7 @@ public class AgentTest {
         Deck deck = new DeckImpl(1, Collections.emptySet());
         Map<String, PlayerState> players = new TreeMap<>();
         Map<String, Agent> agents = new TreeMap<>();
-        return new RoundState(deck, players, agents, Collections.emptySet());
+        List<Integer> artifactOrder = new ArrayList<>();
+        return new RoundState(deck, players, agents, Collections.emptySet(), artifactOrder);
     }
 }

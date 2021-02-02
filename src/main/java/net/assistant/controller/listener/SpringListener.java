@@ -1,5 +1,11 @@
 package net.assistant.controller.listener;
 
+import net.assistant.model.Agent;
+import net.assistant.model.GameEngine;
+import net.assistant.model.RoundEngine;
+import net.assistant.model.agent.RandomAgent;
+import net.assistant.model.engine.GameEngineImpl;
+import net.assistant.model.engine.RoundEngineImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringApplicationRunListener;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -9,6 +15,8 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class SpringListener implements SpringApplicationRunListener {
     public SpringListener(SpringApplication app, String args[]) {
@@ -44,6 +52,32 @@ public class SpringListener implements SpringApplicationRunListener {
         log("Spring running");
         openBrowser();
         log("Spring openned browser");
+
+        RoundEngine roundEngine = new RoundEngineImpl();
+        GameEngine gameEngine = new GameEngineImpl(roundEngine);
+
+        Map<String, Agent> agents = new TreeMap<>();
+        for (int i = 1; i < 5; i++) {
+            agents.put(String.format("%1$d0%%", i*2), new RandomAgent(i / 5.0));
+        }
+
+        Map<String,Integer> tally = new TreeMap<>();
+        for (int game = 0; game < 1000; game++) {
+            Map<String,Integer> scores = gameEngine.processGame(agents);
+            for (Map.Entry<String, Integer> entry : scores.entrySet()) {
+                Integer currentTally = tally.get(entry.getKey());
+                if (currentTally == null) {
+                    currentTally = 0;
+                }
+                currentTally += entry.getValue();
+                tally.put(entry.getKey(), currentTally);
+            }
+        }
+
+        for (Map.Entry<String,Integer> entry : tally.entrySet()) {
+            System.out.println(String.format("%1$s (average score) :- %2$s", entry.getKey(), (1.0*entry.getValue())/1000));
+        }
+        System.out.flush();
     }
 
     @Override

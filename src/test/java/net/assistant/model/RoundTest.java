@@ -5,10 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -25,6 +22,7 @@ public class RoundTest {
     private Agent agent2;
     private Map<String,Agent> agents;
     private Set<Integer> cardsToRemove;
+    private List<Integer> artifactOrder;
     private RoundState firstRound;
 
     @Before
@@ -41,7 +39,8 @@ public class RoundTest {
         agents.put("Player1", agent1);
         agents.put("Player2", agent2);
         cardsToRemove = new TreeSet<>();
-        firstRound = new RoundState(deck, players, agents, cardsToRemove);
+        artifactOrder = new ArrayList<>();
+        firstRound = new RoundState(deck, players, agents, cardsToRemove, artifactOrder);
     }
 
     @Test
