@@ -10,22 +10,19 @@ public class RoundEngineImpl implements RoundEngine {
         Set<String> playersInRound = new TreeSet<>();
         playersInRound.addAll(round.getPlayers().keySet());
 
-        List<Integer> visibleCards = new ArrayList<>(round.getDeck().getSize());
-        List<Integer> remainingGems = new ArrayList<>(round.getDeck().getSize());
         Deck deck = round.getDeck();
         boolean isPlayable = true;
-        Decisions decisions = new Decisions(playersInRound, Collections.emptySet());
+        Decisions decisions;
 
         // First card is not optional
         int firstCard = deck.drawCard();
         switch (deck.getCardType(firstCard)) {
             case GEM:
-                processGems(firstCard, deck, visibleCards, remainingGems, playersInRound, round);
+                processGems(firstCard, deck, playersInRound, round);
                 break;
             case ARTIFACT:
             case HAZARD:
-                visibleCards.add(firstCard);
-                remainingGems.add(0);
+                round.appendCard(firstCard, 0);
                 break;
             default:
                 throw new IllegalArgumentException(String.format("This branch should never be reached, but it was! %1$s"));
@@ -38,7 +35,7 @@ public class RoundEngineImpl implements RoundEngine {
             decisions = collectDecisions(playersInRound, round);
 
             // Process withdrawing players (they are safe before the consequences of the next card)
-            processWithdrawl(visibleCards, remainingGems, playersInRound, deck, decisions, round);
+            processWithdrawl(playersInRound, deck, decisions, round);
 
             // If everyone left, the round is over.
             if (playersInRound.size() == 0) {
@@ -51,20 +48,20 @@ public class RoundEngineImpl implements RoundEngine {
             // Process card effects
             switch (deck.getCardType(card)) {
                 case GEM:
-                    processGems(card, deck, visibleCards, remainingGems, playersInRound, round);
+                    processGems(card, deck, playersInRound, round);
                     break;
                 case HAZARD:
-                    isPlayable = processHazard(card, visibleCards, remainingGems, decisions, round);
+                    isPlayable = processHazard(card, decisions, round);
                     break;
                 case ARTIFACT:
-                    processArtifact(card, visibleCards, remainingGems);
+                    processArtifact(card, round);
                     break;
             }
         }
         return round;
     }
 
-    private void processGems(int card, Deck deck, List<Integer> visibleCards, List<Integer> remainingGems, Set<String> playersInRound, RoundState round) {
+    private void processGems(int card, Deck deck, Set<String> playersInRound, RoundState round) {
         int gemValue = deck.getGemValue(card);
         int split = gemValue / playersInRound.size();
         for (String player : playersInRound) {
@@ -72,11 +69,11 @@ public class RoundEngineImpl implements RoundEngine {
             state.collectGems(split);
         }
         int remainder = gemValue - (split * playersInRound.size());
-        remainingGems.add(remainder);
-        visibleCards.add(card);
+        round.appendCard(card, remainder);
     }
 
-    private boolean processHazard(int card, List<Integer> visibleCards, List<Integer> remainingGems, Decisions decisions, RoundState round) {
+    private boolean processHazard(int card, Decisions decisions, RoundState round) {
+        List<Integer> visibleCards = round.getVisibleCards();
         boolean isPlayable = !visibleCards.contains(card);
         if (!isPlayable) {
             round.getCardsToRemove().add(card);
@@ -85,15 +82,13 @@ public class RoundEngineImpl implements RoundEngine {
                 state.failedExcavate();
             }
         }
-        visibleCards.add(card);
-        remainingGems.add(0);
+        round.appendCard(card, 0);
 
         return isPlayable;
     }
 
-    private void processArtifact(int card, List<Integer> visibleCards, List<Integer> remainingGems) {
-        visibleCards.add(card);
-        remainingGems.add(0);
+    private void processArtifact(int card, RoundState round) {
+        round.appendCard(card, 0);
     }
 
     private Decisions collectDecisions(Set<String> playersInRound, RoundState round) {
@@ -116,7 +111,9 @@ public class RoundEngineImpl implements RoundEngine {
         return new Decisions(excavating, withdrawing);
     }
 
-    private void processWithdrawl(List<Integer> visibleCards, List<Integer> remainingGems, Set<String> playersInRound, Deck deck, Decisions decisions, RoundState round) {
+    private void processWithdrawl(Set<String> playersInRound, Deck deck, Decisions decisions, RoundState round) {
+        List<Integer> visibleCards = round.getVisibleCards();
+        List<Integer> remainingGems = round.getRemainingGems();
         switch (decisions.withdraw.size()) {
             case 0:
                 // Nothing to process
@@ -134,8 +131,7 @@ public class RoundEngineImpl implements RoundEngine {
                         if (CardType.ARTIFACT.equals(deck.getCardType(visible))) {
                             player.collectArtifact(visible);
                             round.getCardsToRemove().add(visible);
-                            visibleCards.remove(i);
-                            remainingGems.remove(i);
+                            round.removeCard(i);
                         }
                     }
                     player.collectGems(sumRemaining);

@@ -1,5 +1,6 @@
 package net.assistant.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +12,8 @@ public class RoundState {
     private final Map<String, Agent> agents;
     private final Set<Integer> cardsToRemove;
     private final List<Integer> artifactOrder;
+    private final List<Integer> visibleCards;
+    private final List<Integer> remainingGems;
 
     public RoundState(Deck deck, Map<String, PlayerState> players, Map<String, Agent> agents, Set<Integer> cardsToRemove, List<Integer> artifactOrder) {
         this.deck = deck;
@@ -18,6 +21,8 @@ public class RoundState {
         this.players = players;
         this.cardsToRemove = cardsToRemove;
         this.artifactOrder = artifactOrder;
+        this.visibleCards = new ArrayList<>(deck.getSize());
+        this.remainingGems = new ArrayList<>(deck.getSize());
     }
 
     public void newRound(int round) {
@@ -42,5 +47,19 @@ public class RoundState {
 
     public List<Integer> getArtifactOrder() {
         return artifactOrder;
+    }
+
+    public List<Integer> getVisibleCards() {return visibleCards;}
+
+    public List<Integer> getRemainingGems() {return remainingGems;}
+
+    public void appendCard(int card, int remainingGems) {
+        this.visibleCards.add(card);
+        this.remainingGems.add(remainingGems);
+    }
+
+    public void removeCard(int index) {
+        this.visibleCards.remove(index);
+        this.remainingGems.remove(index);
     }
 }

@@ -53,6 +53,10 @@ public class SpringListener implements SpringApplicationRunListener {
         openBrowser();
         log("Spring openned browser");
 
+        logAFourPlayerRandomGame();
+    }
+
+    private void logAFourPlayerRandomGame() {
         RoundEngine roundEngine = new RoundEngineImpl();
         GameEngine gameEngine = new GameEngineImpl(roundEngine);
 
@@ -62,7 +66,8 @@ public class SpringListener implements SpringApplicationRunListener {
         }
 
         Map<String,Integer> tally = new TreeMap<>();
-        for (int game = 0; game < 1000; game++) {
+        final int SAMPLE_SIZE = 1000000;
+        for (int game = 0; game < SAMPLE_SIZE; game++) {
             Map<String,Integer> scores = gameEngine.processGame(agents);
             for (Map.Entry<String, Integer> entry : scores.entrySet()) {
                 Integer currentTally = tally.get(entry.getKey());
@@ -72,10 +77,13 @@ public class SpringListener implements SpringApplicationRunListener {
                 currentTally += entry.getValue();
                 tally.put(entry.getKey(), currentTally);
             }
+            if (game % 10000 == 0) {
+                System.out.println(String.format("Completed game %1$7d/%2$7d", game, SAMPLE_SIZE));
+            }
         }
 
         for (Map.Entry<String,Integer> entry : tally.entrySet()) {
-            System.out.println(String.format("%1$s (average score) :- %2$s", entry.getKey(), (1.0*entry.getValue())/1000));
+            System.out.println(String.format("%1$s (average score) :- %2$s", entry.getKey(), (1.0*entry.getValue())/SAMPLE_SIZE));
         }
         System.out.flush();
     }
