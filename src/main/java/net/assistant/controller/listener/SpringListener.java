@@ -3,9 +3,11 @@ package net.assistant.controller.listener;
 import net.assistant.model.Agent;
 import net.assistant.model.GameEngine;
 import net.assistant.model.RoundEngine;
-import net.assistant.model.agent.RandomAgent;
 import net.assistant.model.engine.GameEngineImpl;
 import net.assistant.model.engine.RoundEngineImpl;
+import net.assistant.model.trial.AgentFactory;
+import net.assistant.model.trial.RandomAgentFactory;
+import net.assistant.model.trial.Sampler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringApplicationRunListener;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -17,6 +19,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.Callable;
 
 public class SpringListener implements SpringApplicationRunListener {
     public SpringListener(SpringApplication app, String args[]) {
@@ -53,37 +56,21 @@ public class SpringListener implements SpringApplicationRunListener {
         openBrowser();
         log("Spring openned browser");
 
-        logAFourPlayerRandomGame();
+        AgentFactory randomFactory = new RandomAgentFactory();
+        Callable<Map<String, Double>> sampler = new Sampler(randomFactory, 1000000);
+        Map<String,Double> averageScores;
+        try {
+            averageScores = sampler.call();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        logAverageScores(averageScores);
     }
 
-    private void logAFourPlayerRandomGame() {
-        RoundEngine roundEngine = new RoundEngineImpl();
-        GameEngine gameEngine = new GameEngineImpl(roundEngine);
 
-        Map<String, Agent> agents = new TreeMap<>();
-        for (int i = 1; i < 5; i++) {
-            agents.put(String.format("%1$d0%%", i*2), new RandomAgent(i / 5.0));
-        }
-
-        Map<String,Integer> tally = new TreeMap<>();
-        final int SAMPLE_SIZE = 1000000;
-        for (int game = 0; game < SAMPLE_SIZE; game++) {
-            Map<String,Integer> scores = gameEngine.processGame(agents);
-            for (Map.Entry<String, Integer> entry : scores.entrySet()) {
-                Integer currentTally = tally.get(entry.getKey());
-                if (currentTally == null) {
-                    currentTally = 0;
-                }
-                currentTally += entry.getValue();
-                tally.put(entry.getKey(), currentTally);
-            }
-            if (game % 10000 == 0) {
-                System.out.println(String.format("Completed game %1$7d/%2$7d", game, SAMPLE_SIZE));
-            }
-        }
-
-        for (Map.Entry<String,Integer> entry : tally.entrySet()) {
-            System.out.println(String.format("%1$s (average score) :- %2$s", entry.getKey(), (1.0*entry.getValue())/SAMPLE_SIZE));
+    private void logAverageScores(Map<String, Double> averageScore) {
+        for (Map.Entry<String,Double> entry : averageScore.entrySet()) {
+            System.out.println(String.format("%1$s (average score) :- %2$s", entry.getKey(), entry.getValue()));
         }
         System.out.flush();
     }

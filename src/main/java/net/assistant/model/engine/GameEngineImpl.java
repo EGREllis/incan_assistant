@@ -40,7 +40,7 @@ public class GameEngineImpl implements GameEngine {
         return playerStates;
     }
 
-    private Map<String,Integer> calculateScores(RoundState roundState) {
+    Map<String,Integer> calculateScores(RoundState roundState) {
         Map<String,Integer> scores = new TreeMap<>();
         for (String player : roundState.getPlayers().keySet()) {
             PlayerState playerState = roundState.getPlayers().get(player);
