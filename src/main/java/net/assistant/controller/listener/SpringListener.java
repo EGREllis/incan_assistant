@@ -8,6 +8,7 @@ import net.assistant.model.engine.RoundEngineImpl;
 import net.assistant.model.trial.AgentFactory;
 import net.assistant.model.trial.RandomAgentFactory;
 import net.assistant.model.trial.Sampler;
+import net.assistant.model.trial.UtilityAgentFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringApplicationRunListener;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -57,14 +58,20 @@ public class SpringListener implements SpringApplicationRunListener {
         log("Spring openned browser");
 
         AgentFactory randomFactory = new RandomAgentFactory();
+        AgentFactory opporunityFactory = new UtilityAgentFactory();
         Callable<Map<String, Double>> sampler = new Sampler(randomFactory, 1000000);
+        Callable<Map<String, Double>> opportunitySampler = new Sampler(opporunityFactory, 1000000);
+
         Map<String,Double> averageScores;
+        Map<String,Double> opportunityScores;
         try {
             averageScores = sampler.call();
+            opportunityScores = opportunitySampler.call();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         logAverageScores(averageScores);
+        logAverageScores(opportunityScores);
     }
 
 
