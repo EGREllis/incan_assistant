@@ -26,7 +26,7 @@ public class GameEngineImpl implements GameEngine {
 
     private RoundState newRoundState(Map<String, Agent> agents) {
         Map<String, PlayerState> players = newPlayerStates(agents);
-        Set<Integer> cardsToRemove = new TreeSet<>();
+        List<Integer> cardsToRemove = new ArrayList<>();
         List<Integer> artifactOrder = new ArrayList<>();
         return new RoundState(new DeckImpl(1, cardsToRemove),
                 players, agents, cardsToRemove, artifactOrder);

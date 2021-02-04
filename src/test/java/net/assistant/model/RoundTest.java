@@ -21,7 +21,7 @@ public class RoundTest {
     private Agent agent1;
     private Agent agent2;
     private Map<String,Agent> agents;
-    private Set<Integer> cardsToRemove;
+    private List<Integer> cardsToRemove;
     private List<Integer> artifactOrder;
     private RoundState firstRound;
 
@@ -38,7 +38,7 @@ public class RoundTest {
         agents = new TreeMap<>();
         agents.put("Player1", agent1);
         agents.put("Player2", agent2);
-        cardsToRemove = new TreeSet<>();
+        cardsToRemove = new ArrayList<>();
         artifactOrder = new ArrayList<>();
         firstRound = new RoundState(deck, players, agents, cardsToRemove, artifactOrder);
     }

@@ -13,11 +13,11 @@ import java.util.Map;
 public class DeckTest {
     @Test
     public void when_deckCreated_then_deckIsExpectedSize() {
-        Deck deckRound1 = new DeckImpl(1, Collections.emptySet());
-        Deck deckRound2 = new DeckImpl(2, Collections.emptySet());
-        Deck deckRound3 = new DeckImpl(3, Collections.emptySet());
-        Deck deckRound4 = new DeckImpl(4, Collections.emptySet());
-        Deck deckRound5 = new DeckImpl(5, Collections.emptySet());
+        Deck deckRound1 = new DeckImpl(1, Collections.emptyList());
+        Deck deckRound2 = new DeckImpl(2, Collections.emptyList());
+        Deck deckRound3 = new DeckImpl(3, Collections.emptyList());
+        Deck deckRound4 = new DeckImpl(4, Collections.emptyList());
+        Deck deckRound5 = new DeckImpl(5, Collections.emptyList());
 
         assertThat(deckRound1.getSize(), equalTo(31));
         assertThat(deckRound2.getSize(), equalTo(32));
@@ -50,7 +50,7 @@ public class DeckTest {
 
         Map<Integer, Integer> freq = new HashMap<>();
 
-        Deck deck = new DeckImpl(1, Collections.emptySet());
+        Deck deck = new DeckImpl(1, Collections.emptyList());
         for (int i = 0; i < deck.getSize(); i++) {
             int card = deck.drawCard();
             int cFrequency = 1;
@@ -91,7 +91,7 @@ public class DeckTest {
 
     @Test
     public void when_deckInspected_givenRoundZeroNoArtifactPicked_then_classificationMatchesExpectations() {
-        Deck deck = new DeckImpl(1, Collections.emptySet());
+        Deck deck = new DeckImpl(1, Collections.emptyList());
 
         int nGemCard = 0;
         int nHazardCard = 0;
@@ -123,7 +123,7 @@ public class DeckTest {
 
     @Test
     public void when_deckSummed_given_roundOne_then_sumMatchesExpectations() {
-        Deck deck = new DeckImpl(1, Collections.emptySet());
+        Deck deck = new DeckImpl(1, Collections.emptyList());
 
         int size = deck.getSize();
         int gemSum = 0;
@@ -139,7 +139,7 @@ public class DeckTest {
 
     @Test
     public void when_deckCreated_given_round2_then_twoArtifactsPresent() {
-        Deck deck = new DeckImpl(2, Collections.emptySet());
+        Deck deck = new DeckImpl(2, Collections.emptyList());
 
         int nArtifact = 0;
         for (int i = 0; i < deck.getSize(); i++) {
@@ -154,7 +154,7 @@ public class DeckTest {
 
     @Test
     public void when_deckCreated_given_round2And1ArtifactTaken_then_oneDistinctArtifactPresent() {
-        DeckImpl deck = new DeckImpl(2, Collections.singleton(21));
+        DeckImpl deck = new DeckImpl(2, Collections.singletonList(21));
 
         int nArtifact = 0;
         for (int i = 0; i < deck.getSize(); i++) {

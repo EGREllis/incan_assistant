@@ -15,7 +15,7 @@ public class GameEngineTest {
         RoundEngine roundEngine = new RoundEngineImpl();
         GameEngineImpl gameEngine = new GameEngineImpl(roundEngine);
 
-        Set<Integer> cardsToRemove = new TreeSet<>();
+        List<Integer> cardsToRemove = new ArrayList<>();
         Deck deck = new DeckImpl(1, cardsToRemove);
 
         PlayerState noGemsNoArtifact = new PlayerState("noGemsNoArtifact");

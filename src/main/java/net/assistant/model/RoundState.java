@@ -10,12 +10,12 @@ public class RoundState {
     private Deck deck;
     private final Map<String, PlayerState> players;
     private final Map<String, Agent> agents;
-    private final Set<Integer> cardsToRemove;
+    private final List<Integer> cardsToRemove;
     private final List<Integer> artifactOrder;
     private final List<Integer> visibleCards;
     private final List<Integer> remainingGems;
 
-    public RoundState(Deck deck, Map<String, PlayerState> players, Map<String, Agent> agents, Set<Integer> cardsToRemove, List<Integer> artifactOrder) {
+    public RoundState(Deck deck, Map<String, PlayerState> players, Map<String, Agent> agents, List<Integer> cardsToRemove, List<Integer> artifactOrder) {
         this.deck = deck;
         this.agents = agents;
         this.players = players;
@@ -41,7 +41,7 @@ public class RoundState {
         return players;
     }
 
-    public Set<Integer> getCardsToRemove() {
+    public List<Integer> getCardsToRemove() {
         return cardsToRemove;
     }
 

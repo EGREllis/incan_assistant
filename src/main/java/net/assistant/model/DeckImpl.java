@@ -1,6 +1,9 @@
 package net.assistant.model;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class DeckImpl implements Deck {
     public static final int HAZARD_ONE = -1;
@@ -13,6 +16,31 @@ public class DeckImpl implements Deck {
     public static final int ARTIFACT_THREE = 23;
     public static final int ARTIFACT_FOUR = 24;
     public static final int ARTIFACT_FIVE = 25;
+    public static final Set<Integer> HAZARDS;
+    public static final Set<Integer> ARTIFACTS;
+    public static final Set<Integer> NON_GEMS;
+
+    static {
+        Set<Integer> hazards = new TreeSet<>();
+        hazards.add(HAZARD_ONE);
+        hazards.add(HAZARD_TWO);
+        hazards.add(HAZARD_THREE);
+        hazards.add(HAZARD_FOUR);
+        hazards.add(HAZARD_FIVE);
+        HAZARDS = Collections.unmodifiableSet(hazards);
+        Set<Integer> artifacts = new TreeSet<>();
+        artifacts.add(ARTIFACT_ONE);
+        artifacts.add(ARTIFACT_TWO);
+        artifacts.add(ARTIFACT_THREE);
+        artifacts.add(ARTIFACT_FOUR);
+        artifacts.add(ARTIFACT_FIVE);
+        ARTIFACTS = Collections.unmodifiableSet(artifacts);
+        Set<Integer> nonGems = new TreeSet<>();
+        nonGems.addAll(hazards);
+        nonGems.addAll(artifacts);
+        NON_GEMS = Collections.unmodifiableSet(nonGems);
+    }
+
     private static final int POST_GEM_AND_HAZARD_DECK_INDEX = 30;
     private static final int[] cards = new int [] { 1, 2, 3, 4, 5,
                                                     5, 7, 7, 9, 11,
@@ -27,7 +55,7 @@ public class DeckImpl implements Deck {
     private int[] deck;
     private int drawn = 0;
 
-    public DeckImpl(int round, Set<Integer> seen) {
+    public DeckImpl(int round, List<Integer> seen) {
         int size = POST_GEM_AND_HAZARD_DECK_INDEX + round - seen.size();
         deck = new int[size];
         System.arraycopy(cards, 0, deck, 0, size);

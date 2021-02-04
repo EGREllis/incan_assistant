@@ -79,10 +79,10 @@ public class AgentTest {
     }
 
     private RoundState emptyRoundState() {
-        Deck deck = new DeckImpl(1, Collections.emptySet());
+        Deck deck = new DeckImpl(1, Collections.emptyList());
         Map<String, PlayerState> players = new TreeMap<>();
         Map<String, Agent> agents = new TreeMap<>();
         List<Integer> artifactOrder = new ArrayList<>();
-        return new RoundState(deck, players, agents, Collections.emptySet(), artifactOrder);
+        return new RoundState(deck, players, agents, Collections.emptyList(), artifactOrder);
     }
 }

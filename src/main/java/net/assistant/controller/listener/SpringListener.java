@@ -57,12 +57,13 @@ public class SpringListener implements SpringApplicationRunListener {
         openBrowser();
         log("Spring openned browser");
 
+        int sampleSize = 1000000;
         AgentFactory pairFactory = new RandomAgentFactory(0.6, 0.8);
         AgentFactory randomFactory = new RandomAgentFactory(0.0, 0.2, 0.4, 0.6, 0.8, 1.0);
-        AgentFactory opporunityFactory = new UtilityAgentFactory();
-        Callable<Map<String, Double>> pairSampler = new Sampler(pairFactory, 1000000);
-        Callable<Map<String, Double>> sampler = new Sampler(randomFactory, 1000000);
-        Callable<Map<String, Double>> opportunitySampler = new Sampler(opporunityFactory, 1000000);
+        AgentFactory opportunityFactory = new UtilityAgentFactory();
+        Callable<Map<String, Double>> pairSampler = new Sampler(pairFactory, sampleSize);
+        Callable<Map<String, Double>> sampler = new Sampler(randomFactory, sampleSize);
+        Callable<Map<String, Double>> opportunitySampler = new Sampler(opportunityFactory, sampleSize);
 
         Map<String,Double> pairScores;
         Map<String,Double> averageScores;

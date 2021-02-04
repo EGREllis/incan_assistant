@@ -13,11 +13,11 @@ public class AlwaysWithdrawAgentTest {
 
     @Test
     public void when_askedToDecide_then_alwaysServesAndAlwaysWithdraws() {
+        List<Integer> cardsToRemove = new ArrayList<>();
         ConditionalAgent conditionalAgent = new AlwaysWithdrawAgent();
-        Deck deck = new DeckImpl(1, new TreeSet<>());
+        Deck deck = new DeckImpl(1, cardsToRemove);
         Map<String, PlayerState> players = new TreeMap<>();
         Map<String, Agent> agents = new TreeMap<>();
-        Set<Integer> cardsToRemove = new TreeSet<>();
         List<Integer> artifactOrder = new ArrayList<>();
 
         RoundState round = new RoundState(deck, players, agents, cardsToRemove, artifactOrder);

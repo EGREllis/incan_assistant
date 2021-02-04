@@ -18,7 +18,7 @@ public class NoOpporunityCostAgent {
 
     @Before
     public void setup() {
-        Set<Integer> cardsToRemove = new TreeSet<>();
+        List<Integer> cardsToRemove = new ArrayList<>();
         Deck deck = new DeckImpl(1, cardsToRemove);
         Map<String, PlayerState> players = new TreeMap<>();
         Map<String, Agent> agents = new TreeMap<>();
