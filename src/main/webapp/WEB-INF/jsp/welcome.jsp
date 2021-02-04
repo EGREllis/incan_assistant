@@ -20,23 +20,56 @@
         <link rel="stylesheet" href="main.css" />
         <script src="main.js"></script>
         <script>
-            var deck = [1, 2, 3, 4, 5, 5, 7, 7, 9, 11, 11, 13, 14, 15, 17, "H1", "H2", "H3", "H4", "H5", "A1", "A2", "A3", "A4", "A5"];
+            var deck =      [1, 2, 3, 4, 5, 7, 9, 11, 13, 14, 15, 17, "H1", "H2", "H3", "H4", "H5", "A1", "A2", "A3", "A4", "A5"];
+            var quantity =  [1, 1, 1, 1, 2, 2, 1, 2,  1,  1,  1,  1,  3,    3,    3,    3,    3,    1,    1,    1,    1,    1];
+            var cardType =  [1, 1, 1, 1, 1, 1, 1, 1,  1,  1,  1,  1,  2,    2,    2,    2,    2,    3,    3,    3,    3,    3];
+            var tableau =   [];
 
-            function newCard(i) {
-                alert("New card: "+i+" ("+deck[i]+")");
+            function nDistinctCards() {
+                var sum = 0;
+                for (var i = 0; i < quantity.length; i++) {
+                    if (quantity[i] > 0) {
+                        sum++;
+                    }
+                }
+                return sum;
+            }
+
+            function addCardToTableau(i) {
+                if (quantity[i] >= 0) {
+                    quantity[i] -= 1;
+                    tableau[tableau.size] = i;
+                }
+                loaded();
+            }
+
+            function removeCardFromTableau(i) {
+
+            }
+
+            function svgBackground() {
+                var svgCode = '<g fill="white" stroke="black" stroke-width="1">';
+                svgCode += '<rect x="5" y="5" width="990" height="70" />';
+                svgCode += '<text x="450" y="25">Card selector</text>';
+                svgCode += '</g>';
+                svgCode += '<g fill="brown" stroke="black" stroke-width="1">';
+                svgCode += '<rect x="5" y="80" width="990" height="70" />';
+                svgCode += '<text x="450" y="100">Tableau</text>';
+                svgCode += '</g>';
+                return svgCode;
             }
 
             function card(i, x, y) {
                 var svgCard = '';
                 var strokeColor;
-                if (i < 15) {
+                if (cardType[i] == 1) {
                     strokeColor = "black";
-                } else if (i >= 15 && i <= 19) {
+                } else if (cardType[i] == 2) {
                     strokeColor = "red";
-                } else if (i >= 20 && i <= 24) {
+                } else if (cardType[i] == 3) {
                     strokeColor = "orange";
                 }
-                svgCard += '<g fill="white" stroke="'+strokeColor+'" stroke-width="1" onclick="newCard('+i+')">';
+                svgCard += '<g fill="white" stroke="'+strokeColor+'" stroke-width="1" onclick="addCardToTableau('+i+')">';
                 svgCard += '<rect x="'+x+'" y="'+y+'" width="30" height="40" />';
                 svgCard += '<text x="'+(x+5)+'" y="'+(y+20)+'">'+deck[i]+'</text>';
                 svgCard += '</g>';
@@ -44,9 +77,21 @@
             }
 
             function loaded() {
-                var allSvgCode = "";
+                var allSvgCode = svgBackground();
+                var nCards = nDistinctCards();
+                var cardWidth = 990 - 2 * nCards;
+                var unitCardWidth = Math.floor(cardWidth / nCards);
+                var cardOffset = Math.floor(((unitCardWidth * nCards) - cardWidth) / 2);
+
+                alert("X: "+x+" UnitCardWidth: "+unitCardWidth+" CardOffset: "+cardOffset+ " (cardWidth "+cardWidth+" nCards "+nCards+" unitCardWidth "+unitCardWidth+")" );
+
+                var drawn = 0;
                 for (var i = 0; i < deck.length; i++) {
-                    allSvgCode += card(i, i*32+5, 25);
+                    if (quantity[i] > 0) {
+                        var x = (drawn*unitCardWidth)+(10+cardOffset);
+                        allSvgCode += card(i, x, 30);
+                        drawn++;
+                    }
                 }
 
                 var ele = document.getElementById("svgBox");
