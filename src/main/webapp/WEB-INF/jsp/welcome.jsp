@@ -37,16 +37,26 @@
 
             function addCardToTableau(i) {
                 if (quantity[i] >= 0) {
-                    alert("Moving card "+deck[i]+" to tableau");
                     quantity[i] -= 1;
                     tableau[tableau.length] = deck[i];
-                    alert("Tableau["+tableau.length+"] = "+tableau[tableau.length-1]);
                 }
                 loaded();
             }
 
             function removeCardFromTableau(i) {
-
+                var tableauCard = tableau[i];
+                for (var deckIndex = 0; deckIndex < deck.length; deckIndex++) {
+                    if (deck[deckIndex] == tableauCard) {
+                        quantity[deckIndex] += 1;
+                        if (tableau.length == 1) {
+                            tableau = [];
+                        } else {
+                            tableau = tableau.slice(0, i).concat(tableau.slice(i+1, tableau.length));
+                        }
+                        break;
+                    }
+                }
+                loaded();
             }
 
             function svgBackground() {
@@ -61,7 +71,7 @@
                 return svgCode;
             }
 
-            function card(index, card, x, y) {
+            function card(index, card, x, y, func) {
                 var svgCard = '';
                 var strokeColor;
                 if (cardType[index] == 1) {
@@ -71,7 +81,7 @@
                 } else if (cardType[index] == 3) {
                     strokeColor = "orange";
                 }
-                svgCard += '<g fill="white" stroke="'+strokeColor+'" stroke-width="1" onclick="addCardToTableau('+index+')">';
+                svgCard += '<g fill="white" stroke="'+strokeColor+'" stroke-width="1" onclick="'+func+'('+index+')">';
                 svgCard += '<rect x="'+x+'" y="'+y+'" width="30" height="40" />';
                 svgCard += '<text x="'+(x+5)+'" y="'+(y+20)+'">'+card+'</text>';
                 svgCard += '</g>';
@@ -96,7 +106,7 @@
                 for (var i = 0; i < deck.length; i++) {
                     if (quantity[i] > 0) {
                         var x = (drawn*unitCardWidth)+(10+cardOffset);
-                        selectorSvg += card(i, deck[i], x, 30);
+                        selectorSvg += card(i, deck[i], x, 30, "addCardToTableau");
                         drawn++;
                     }
                 }
@@ -111,7 +121,7 @@
 
                 for (var i = 0; i < tableau.length; i++) {
                     var x = (i * unitCardWidth) + (10+cardOffset);
-                    tableauSvg += card(i, tableau[i], x, 105);
+                    tableauSvg += card(i, tableau[i], x, 105, "removeCardFromTableau");
                 }
                 return tableauSvg;
             }
