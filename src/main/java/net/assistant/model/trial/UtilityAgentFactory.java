@@ -14,12 +14,13 @@ public class UtilityAgentFactory implements AgentFactory {
     @Override
     public Map<String, Agent> newAgents() {
         Map<String, Agent> agents = new TreeMap<>();
-        agents.put("80% excavate", new RandomAgent(0.8));
         agents.put("No Opportunity (%80 excavate)", new CompositeAgent(Arrays.asList(
                 new NoOpportunityCostAgent(),
                 new RandomAgent(0.8)
         )));
-        agents.put("No Opportunity (pFail 50%)", new RationalFailureAgent(0.39));
+        agents.put("Rational 0.30", new RationalFailureAgent(0.30));
+        agents.put("Rational 0.40", new RationalFailureAgent(0.40));
+        agents.put("Rational 0.50", new RationalFailureAgent(0.50));
                 //new RationalFailureAgent(0.35) // 6.41
                 //new RationalFailureAgent(0.38) // 7.589534
                 //new RationalFailureAgent(0.3825) // 7.528707

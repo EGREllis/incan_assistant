@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import java.util.concurrent.Callable;
 
 public class Sampler implements Callable<Map<String,Double>> {
+    private static final int LOG_THRESHOLD = 100000;
     private final AgentFactory agentFactory;
     private final int sampleSize;
 
@@ -20,7 +21,7 @@ public class Sampler implements Callable<Map<String,Double>> {
     }
 
     @Override
-    public Map<String, Double> call() throws Exception {
+    public Map<String, Double> call() {
         RoundEngine roundEngine = new RoundEngineImpl();
         GameEngine gameEngine = new GameEngineImpl(roundEngine);
 
@@ -37,7 +38,7 @@ public class Sampler implements Callable<Map<String,Double>> {
                 currentTally += entry.getValue();
                 tally.put(entry.getKey(), currentTally);
             }
-            if (game % 100000 == 0) {
+            if (game % LOG_THRESHOLD == 0) {
                 System.out.println(String.format("Completed game %1$7d/%2$7d", game, sampleSize));
             }
         }

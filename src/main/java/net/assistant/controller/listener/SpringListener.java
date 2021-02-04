@@ -1,12 +1,6 @@
 package net.assistant.controller.listener;
 
-import net.assistant.model.Agent;
-import net.assistant.model.GameEngine;
-import net.assistant.model.RoundEngine;
-import net.assistant.model.engine.GameEngineImpl;
-import net.assistant.model.engine.RoundEngineImpl;
 import net.assistant.model.trial.AgentFactory;
-import net.assistant.model.trial.RandomAgentFactory;
 import net.assistant.model.trial.Sampler;
 import net.assistant.model.trial.UtilityAgentFactory;
 import org.springframework.boot.SpringApplication;
@@ -19,7 +13,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.Callable;
 
 public class SpringListener implements SpringApplicationRunListener {
@@ -55,28 +48,18 @@ public class SpringListener implements SpringApplicationRunListener {
     public void running(ConfigurableApplicationContext context) {
         log("Spring running");
         openBrowser();
-        log("Spring openned browser");
+        log("Spring opened browser");
 
         int sampleSize = 1000000;
-        AgentFactory pairFactory = new RandomAgentFactory(0.6, 0.8);
-        AgentFactory randomFactory = new RandomAgentFactory(0.0, 0.2, 0.4, 0.6, 0.8, 1.0);
         AgentFactory opportunityFactory = new UtilityAgentFactory();
-        Callable<Map<String, Double>> pairSampler = new Sampler(pairFactory, sampleSize);
-        Callable<Map<String, Double>> sampler = new Sampler(randomFactory, sampleSize);
         Callable<Map<String, Double>> opportunitySampler = new Sampler(opportunityFactory, sampleSize);
 
-        Map<String,Double> pairScores;
-        Map<String,Double> averageScores;
         Map<String,Double> opportunityScores;
         try {
-            pairScores = pairSampler.call();
-            averageScores = sampler.call();
             opportunityScores = opportunitySampler.call();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        logAverageScores(pairScores);
-        logAverageScores(averageScores);
         logAverageScores(opportunityScores);
     }
 

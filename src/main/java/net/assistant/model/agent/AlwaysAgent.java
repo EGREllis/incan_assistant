@@ -4,10 +4,16 @@ import net.assistant.model.ConditionalAgent;
 import net.assistant.model.PlayerDecision;
 import net.assistant.model.RoundState;
 
-public class AlwaysExcavateAgent implements ConditionalAgent {
+public class AlwaysAgent implements ConditionalAgent {
+    private final PlayerDecision decision;
+
+    public AlwaysAgent(PlayerDecision decision) {
+        this.decision = decision;
+    }
+
     @Override
     public PlayerDecision decide(RoundState roundState) {
-        return PlayerDecision.EXCAVATE;
+        return decision;
     }
 
     @Override
@@ -17,6 +23,6 @@ public class AlwaysExcavateAgent implements ConditionalAgent {
 
     @Override
     public String toString() {
-        return "AlwaysExcavate";
+        return String.format("Always %1$s", decision);
     }
 }

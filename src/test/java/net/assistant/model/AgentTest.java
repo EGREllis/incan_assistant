@@ -1,7 +1,6 @@
 package net.assistant.model;
 
-import net.assistant.model.agent.AlwaysExcavateAgent;
-import net.assistant.model.agent.AlwaysWithdrawAgent;
+import net.assistant.model.agent.AlwaysAgent;
 import net.assistant.model.agent.RandomAgent;
 import org.junit.Test;
 
@@ -13,7 +12,7 @@ public class AgentTest {
 
     @Test
     public void when_makingDecision_given_alwaysExcavate_then_onlyReturnsExcavate() {
-        Agent agent = new AlwaysExcavateAgent();
+        Agent agent = new AlwaysAgent(PlayerDecision.EXCAVATE);
         RoundState roundState = emptyRoundState();
 
         int count = 0;
@@ -29,7 +28,7 @@ public class AgentTest {
 
     @Test
     public void when_makingDecision_given_alwaysWithdraw_then_onlyReturnsWithdraw() {
-        Agent agent = new AlwaysWithdrawAgent();
+        Agent agent = new AlwaysAgent(PlayerDecision.WITHDRAW);
         RoundState roundState = emptyRoundState();
 
         int count = 0;
