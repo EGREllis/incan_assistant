@@ -37,8 +37,10 @@
 
             function addCardToTableau(i) {
                 if (quantity[i] >= 0) {
+                    alert("Moving card "+deck[i]+" to tableau");
                     quantity[i] -= 1;
-                    tableau[tableau.size] = i;
+                    tableau[tableau.length] = deck[i];
+                    alert("Tableau["+tableau.length+"] = "+tableau[tableau.length-1]);
                 }
                 loaded();
             }
@@ -59,40 +61,65 @@
                 return svgCode;
             }
 
-            function card(i, x, y) {
+            function card(index, card, x, y) {
                 var svgCard = '';
                 var strokeColor;
-                if (cardType[i] == 1) {
+                if (cardType[index] == 1) {
                     strokeColor = "black";
-                } else if (cardType[i] == 2) {
+                } else if (cardType[index] == 2) {
                     strokeColor = "red";
-                } else if (cardType[i] == 3) {
+                } else if (cardType[index] == 3) {
                     strokeColor = "orange";
                 }
-                svgCard += '<g fill="white" stroke="'+strokeColor+'" stroke-width="1" onclick="addCardToTableau('+i+')">';
+                svgCard += '<g fill="white" stroke="'+strokeColor+'" stroke-width="1" onclick="addCardToTableau('+index+')">';
                 svgCard += '<rect x="'+x+'" y="'+y+'" width="30" height="40" />';
-                svgCard += '<text x="'+(x+5)+'" y="'+(y+20)+'">'+deck[i]+'</text>';
+                svgCard += '<text x="'+(x+5)+'" y="'+(y+20)+'">'+card+'</text>';
                 svgCard += '</g>';
                 return svgCard;
             }
 
-            function loaded() {
-                var allSvgCode = svgBackground();
+            function calcCardGeometry() {
                 var nCards = nDistinctCards();
                 var cardWidth = 990 - 2 * nCards;
                 var unitCardWidth = Math.floor(cardWidth / nCards);
                 var cardOffset = Math.floor(((unitCardWidth * nCards) - cardWidth) / 2);
+                return [unitCardWidth, cardOffset];
+            }
 
-                alert("X: "+x+" UnitCardWidth: "+unitCardWidth+" CardOffset: "+cardOffset+ " (cardWidth "+cardWidth+" nCards "+nCards+" unitCardWidth "+unitCardWidth+")" );
+            function drawCardSelectorCards() {
+                var geom = calcCardGeometry();
+                var unitCardWidth = geom[0];
+                var cardOffset = geom[1];
+                var selectorSvg = "";
 
                 var drawn = 0;
                 for (var i = 0; i < deck.length; i++) {
                     if (quantity[i] > 0) {
                         var x = (drawn*unitCardWidth)+(10+cardOffset);
-                        allSvgCode += card(i, x, 30);
+                        selectorSvg += card(i, deck[i], x, 30);
                         drawn++;
                     }
                 }
+                return selectorSvg;
+            }
+
+            function drawTableauCards() {
+                var geom = calcCardGeometry();
+                var unitCardWidth = geom[0];
+                var cardOffset = geom[1];
+                var tableauSvg = "";
+
+                for (var i = 0; i < tableau.length; i++) {
+                    var x = (i * unitCardWidth) + (10+cardOffset);
+                    tableauSvg += card(i, tableau[i], x, 105);
+                }
+                return tableauSvg;
+            }
+
+            function loaded() {
+                var allSvgCode = svgBackground();
+                allSvgCode += drawCardSelectorCards();
+                allSvgCode += drawTableauCards();
 
                 var ele = document.getElementById("svgBox");
                 ele.innerHTML = allSvgCode;
