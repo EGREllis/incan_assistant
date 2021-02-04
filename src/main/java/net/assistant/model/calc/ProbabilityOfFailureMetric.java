@@ -1,32 +1,20 @@
-package net.assistant.model.agent;
+package net.assistant.model.calc;
 
-import net.assistant.model.*;
+import net.assistant.model.CardType;
+import net.assistant.model.Deck;
+import net.assistant.model.DeckImpl;
+import net.assistant.model.RoundState;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
-public class RationalFailureAgent implements ConditionalAgent {
-    private final double threshold;
-
-    public RationalFailureAgent(double threshold) {
-        this.threshold = threshold;
-    }
-
+public class ProbabilityOfFailureMetric implements Metric {
     @Override
-    public PlayerDecision decide(RoundState roundState) {
-        Set<Integer> visibleHazards = filterVisibleHazards(roundState);
-        double probFail = calculateProbabilityOfFailure(visibleHazards, roundState);
-        PlayerDecision decision;
-        if (probFail < threshold) {
-            decision = PlayerDecision.EXCAVATE;
-        } else {
-            decision = PlayerDecision.WITHDRAW;
-        }
-        return decision;
-    }
-
-    @Override
-    public boolean isApplicable(RoundState state) {
-        return true;
+    public double calculate(RoundState round) {
+        Set<Integer> visibleHazards = filterVisibleHazards(round);
+        return calculateProbabilityOfFailure(visibleHazards, round);
     }
 
     private Set<Integer> filterVisibleHazards(RoundState round) {

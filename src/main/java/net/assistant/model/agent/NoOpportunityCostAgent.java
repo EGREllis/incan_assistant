@@ -1,7 +1,6 @@
 package net.assistant.model.agent;
 
 import net.assistant.model.*;
-
 import java.util.List;
 
 /**

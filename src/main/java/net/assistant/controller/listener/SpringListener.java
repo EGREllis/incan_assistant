@@ -1,6 +1,7 @@
 package net.assistant.controller.listener;
 
 import net.assistant.model.trial.AgentFactory;
+import net.assistant.model.trial.NetWorthAgentFactory;
 import net.assistant.model.trial.Sampler;
 import net.assistant.model.trial.UtilityAgentFactory;
 import org.springframework.boot.SpringApplication;
@@ -54,13 +55,19 @@ public class SpringListener implements SpringApplicationRunListener {
         AgentFactory opportunityFactory = new UtilityAgentFactory();
         Callable<Map<String, Double>> opportunitySampler = new Sampler(opportunityFactory, sampleSize);
 
+        AgentFactory netWorthFactory = new NetWorthAgentFactory();
+        Callable<Map<String, Double>> netWorthSampler = new Sampler(netWorthFactory, sampleSize);
+
         Map<String,Double> opportunityScores;
+        Map<String,Double> netWorthScores;
         try {
             opportunityScores = opportunitySampler.call();
+            netWorthScores = netWorthSampler.call();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         logAverageScores(opportunityScores);
+        logAverageScores(netWorthScores);
     }
 
 

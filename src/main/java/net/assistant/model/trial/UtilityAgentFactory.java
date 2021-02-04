@@ -4,7 +4,7 @@ import net.assistant.model.Agent;
 import net.assistant.model.agent.CompositeAgent;
 import net.assistant.model.agent.NoOpportunityCostAgent;
 import net.assistant.model.agent.RandomAgent;
-import net.assistant.model.agent.RationalFailureAgent;
+import net.assistant.model.agent.MetricAgent;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -18,9 +18,9 @@ public class UtilityAgentFactory implements AgentFactory {
                 new NoOpportunityCostAgent(),
                 new RandomAgent(0.8)
         )));
-        agents.put("Rational 0.30", new RationalFailureAgent(0.30));
-        agents.put("Rational 0.40", new RationalFailureAgent(0.40));
-        agents.put("Rational 0.50", new RationalFailureAgent(0.50));
+        agents.put("Rational 0.30", MetricAgent.probabilityOfFailureAgent(0.30));
+        agents.put("Rational 0.40", MetricAgent.probabilityOfFailureAgent(0.40));
+        agents.put("Rational 0.50", MetricAgent.probabilityOfFailureAgent(0.50));
                 //new RationalFailureAgent(0.35) // 6.41
                 //new RationalFailureAgent(0.38) // 7.589534
                 //new RationalFailureAgent(0.3825) // 7.528707

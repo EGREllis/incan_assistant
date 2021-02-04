@@ -49,7 +49,7 @@ public class GameEngineImpl implements GameEngine {
             for (int i = 0; i < artifactOrder.size(); i++) {
                 int artifact = artifactOrder.get(i);
                 if (playerState.getSavedArtifacts().contains(artifact)) {
-                    if (i < 2) {
+                    if (i <= 2) {
                         score += SCORE_FIRST_THREE_ARTIFACTS;
                     } else {
                         score += SCORE_REMAINING_ARTIFACTS;
