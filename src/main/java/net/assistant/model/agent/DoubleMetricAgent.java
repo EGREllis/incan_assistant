@@ -27,7 +27,6 @@ public class DoubleMetricAgent implements ConditionalAgent {
         } else {
             decision = PlayerDecision.WITHDRAW;
         }
-        System.out.println(String.format("%1$s %2$f %3$s %4$f ratio: %5$f decision %6$s", firstMetric, valueFirstMetric, secondMetric, valueSecondMetric, ratio, decision));
         return decision;
     }
 
