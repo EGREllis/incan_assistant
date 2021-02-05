@@ -62,12 +62,12 @@
 
             function svgBackground() {
                 var svgCode = '<g fill="white" stroke="black" stroke-width="1">';
-                svgCode += '<rect x="5" y="5" width="990" height="70" />';
+                svgCode += '<rect x="5" y="5" width="990" height="90" />';
                 svgCode += '<text x="450" y="25">Card selector</text>';
                 svgCode += '</g>';
                 svgCode += '<g fill="brown" stroke="black" stroke-width="1">';
-                svgCode += '<rect x="5" y="80" width="990" height="70" />';
-                svgCode += '<text x="450" y="100">Tableau</text>';
+                svgCode += '<rect x="5" y="100" width="990" height="70" />';
+                svgCode += '<text x="450" y="120">Tableau</text>';
                 svgCode += '</g>';
                 return svgCode;
             }
@@ -92,14 +92,18 @@
                 return [unitCardWidth, cardOffset];
             }
 
-            function card(cardIndex, i, x, y, func) {
+            function card(cardIndex, i, x, y, quant, func) {
                 var svgCard = '';
                 var strokeColor = getCardTypeStrokeColor(cardIndex);
 
-                svgCard += '<g fill="white" stroke="'+strokeColor+'" stroke-width="1" onclick="'+func+'('+i+')">';
-                svgCard += '<rect x="'+x+'" y="'+y+'" width="30" height="40" />';
-                svgCard += '<text x="'+(x+5)+'" y="'+(y+20)+'">'+cards[cardIndex]+'</text>';
-                svgCard += '</g>';
+                for (var q = quant; q > 0; q--) {
+                    var cardX = x;
+                    var cardY = y + (q-1) * 10;
+                    svgCard += '<g fill="white" stroke="'+strokeColor+'" stroke-width="1" onclick="'+func+'('+i+')">';
+                    svgCard += '<rect x="'+cardX+'" y="'+cardY+'" width="30" height="40" />';
+                    svgCard += '<text x="'+(cardX+5)+'" y="'+(cardY+20)+'">'+cards[cardIndex]+'</text>';
+                    svgCard += '</g>';
+                }
                 return svgCard;
             }
 
@@ -113,11 +117,10 @@
                 for (var i = 0; i < deck.length; i++) {
                     if (quantity[i] > 0) {
                         var x = (drawn*unitCardWidth)+(10+cardOffset);
-                        selectorSvg += card(deck[i], i, x, 30, "addCardToTableau");
+                        selectorSvg += card(deck[i], i, x, 30, quantity[deck[i]], "addCardToTableau");
                         drawn++;
                     }
                 }
-                alert(selectorSvg);
                 return selectorSvg;
             }
 
@@ -129,7 +132,7 @@
 
                 for (var i = 0; i < tableau.length; i++) {
                     var x = (i * unitCardWidth) + (10+cardOffset);
-                    tableauSvg += card(tableau[i], i, x, 105, "removeCardFromTableau");
+                    tableauSvg += card(tableau[i], i, x, 125, 1, "removeCardFromTableau");
                 }
                 return tableauSvg;
             }
