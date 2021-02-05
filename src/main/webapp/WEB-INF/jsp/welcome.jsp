@@ -20,7 +20,8 @@
         <link rel="stylesheet" href="main.css" />
         <script src="main.js"></script>
         <script>
-            var deck =      [1, 2, 3, 4, 5, 7, 9, 11, 13, 14, 15, 17, "H1", "H2", "H3", "H4", "H5", "A1", "A2", "A3", "A4", "A5"];
+            var cards =     [1, 2, 3, 4, 5, 7, 9, 11, 13, 14, 15, 17, "H1", "H2", "H3", "H4", "H5", "A1", "A2", "A3", "A4", "A5"];
+            var deck =      [0, 1, 2, 3, 4, 5, 6, 7,  8,  9,  10, 11, 12,   13,   14,   15,   16,   17,   18,   19,   20,   21];
             var quantity =  [1, 1, 1, 1, 2, 2, 1, 2,  1,  1,  1,  1,  3,    3,    3,    3,    3,    1,    1,    1,    1,    1];
             var cardType =  [1, 1, 1, 1, 1, 1, 1, 1,  1,  1,  1,  1,  2,    2,    2,    2,    2,    3,    3,    3,    3,    3];
             var tableau =   [];
@@ -71,21 +72,16 @@
                 return svgCode;
             }
 
-            function card(index, card, x, y, func) {
-                var svgCard = '';
+            function getCardTypeStrokeColor(cardIndex) {
                 var strokeColor;
-                if (cardType[index] == 1) {
+                if (cardType[cardIndex] == 1) {
                     strokeColor = "black";
-                } else if (cardType[index] == 2) {
+                } else if (cardType[cardIndex] == 2) {
                     strokeColor = "red";
-                } else if (cardType[index] == 3) {
+                } else if (cardType[cardIndex] == 3) {
                     strokeColor = "orange";
                 }
-                svgCard += '<g fill="white" stroke="'+strokeColor+'" stroke-width="1" onclick="'+func+'('+index+')">';
-                svgCard += '<rect x="'+x+'" y="'+y+'" width="30" height="40" />';
-                svgCard += '<text x="'+(x+5)+'" y="'+(y+20)+'">'+card+'</text>';
-                svgCard += '</g>';
-                return svgCard;
+                return strokeColor;
             }
 
             function calcCardGeometry() {
@@ -94,6 +90,17 @@
                 var unitCardWidth = Math.floor(cardWidth / nCards);
                 var cardOffset = Math.floor(((unitCardWidth * nCards) - cardWidth) / 2);
                 return [unitCardWidth, cardOffset];
+            }
+
+            function card(cardIndex, i, x, y, func) {
+                var svgCard = '';
+                var strokeColor = getCardTypeStrokeColor(cardIndex);
+
+                svgCard += '<g fill="white" stroke="'+strokeColor+'" stroke-width="1" onclick="'+func+'('+i+')">';
+                svgCard += '<rect x="'+x+'" y="'+y+'" width="30" height="40" />';
+                svgCard += '<text x="'+(x+5)+'" y="'+(y+20)+'">'+cards[cardIndex]+'</text>';
+                svgCard += '</g>';
+                return svgCard;
             }
 
             function drawCardSelectorCards() {
@@ -106,10 +113,11 @@
                 for (var i = 0; i < deck.length; i++) {
                     if (quantity[i] > 0) {
                         var x = (drawn*unitCardWidth)+(10+cardOffset);
-                        selectorSvg += card(i, deck[i], x, 30, "addCardToTableau");
+                        selectorSvg += card(deck[i], i, x, 30, "addCardToTableau");
                         drawn++;
                     }
                 }
+                alert(selectorSvg);
                 return selectorSvg;
             }
 
@@ -121,7 +129,7 @@
 
                 for (var i = 0; i < tableau.length; i++) {
                     var x = (i * unitCardWidth) + (10+cardOffset);
-                    tableauSvg += card(i, tableau[i], x, 105, "removeCardFromTableau");
+                    tableauSvg += card(tableau[i], i, x, 105, "removeCardFromTableau");
                 }
                 return tableauSvg;
             }
@@ -137,7 +145,7 @@
         </script>
     </head>
     <body onload="loaded()">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" style="width:100%; height:100%" id="svgBox">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 200" style="width:100%; height:100%" id="svgBox">
         </svg>
     </body>
 </html>
