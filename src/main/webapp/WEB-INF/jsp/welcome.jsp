@@ -100,7 +100,7 @@
                     var cardX = x;
                     var cardY = y + (q-1) * 10;
                     svgCard += '<g fill="white" stroke="'+strokeColor+'" stroke-width="1" onclick="'+func+'('+i+')">';
-                    svgCard += '<rect x="'+cardX+'" y="'+cardY+'" width="30" height="40" />';
+                    svgCard += '<rect x="'+cardX+'" y="'+cardY+'" width="36" height="40" />';
                     svgCard += '<text x="'+(cardX+5)+'" y="'+(cardY+20)+'">'+cards[cardIndex]+'</text>';
                     svgCard += '</g>';
                 }
@@ -108,30 +108,22 @@
             }
 
             function drawCardSelectorCards() {
-                var geom = calcCardGeometry();
-                var unitCardWidth = geom[0];
-                var cardOffset = geom[1];
                 var selectorSvg = "";
 
-                var drawn = 0;
                 for (var i = 0; i < deck.length; i++) {
                     if (quantity[i] > 0) {
-                        var x = (drawn*unitCardWidth)+(10+cardOffset);
+                        var x = (i*44)+17;
                         selectorSvg += card(deck[i], i, x, 30, quantity[deck[i]], "addCardToTableau");
-                        drawn++;
                     }
                 }
                 return selectorSvg;
             }
 
             function drawTableauCards() {
-                var geom = calcCardGeometry();
-                var unitCardWidth = geom[0];
-                var cardOffset = geom[1];
                 var tableauSvg = "";
 
                 for (var i = 0; i < tableau.length; i++) {
-                    var x = (i * unitCardWidth) + (10+cardOffset);
+                    var x = (i * 40) + 10;
                     tableauSvg += card(tableau[i], i, x, 125, 1, "removeCardFromTableau");
                 }
                 return tableauSvg;
@@ -148,7 +140,61 @@
         </script>
     </head>
     <body onload="loaded()">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 200" style="width:100%; height:100%" id="svgBox">
-        </svg>
+        <div class="incan-header px-3 py-3 pt-md-5 pd-md-4 mx-auto text-center">
+            <h1 class="display-4">Incan Gold Assistant</h1>
+            <p class="lead">Get an edge on your opponents!</p>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 200" style="width:100%; height:100%" id="svgBox">
+            </svg>
+        </div>
+        <form method="POST" id="">
+            <div class="container">
+                <div class="card-deck text-center">
+                    <div class="card">
+                        <div class="card-header">
+                            <p class="card-text">Player name 1</p>
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <li>Excavate</li>
+                                <li>Withdraw</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <p class="card-text">Player name 2</p>
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <li>Excavate</li>
+                                <li>Withdraw</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <p class="card-text">Player name 3</p>
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <li>Excavate</li>
+                                <li>Withdraw</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <p class="card-text">Player name 4</p>
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <li>Excavate</li>
+                                <li>Withdraw</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </body>
 </html>
