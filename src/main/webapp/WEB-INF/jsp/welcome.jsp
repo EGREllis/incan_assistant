@@ -140,14 +140,32 @@
         </script>
     </head>
     <body onload="loaded()">
-        <div class="incan-header px-3 py-3 pt-md-5 pd-md-4 mx-auto text-center">
-            <h1 class="display-4">Incan Gold Assistant</h1>
-            <p class="lead">Get an edge on your opponents!</p>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 200" style="width:100%; height:100%" id="svgBox">
-            </svg>
-        </div>
         <form method="POST" id="">
-            <div class="container">
+            <div class="container-fluid">
+                <div class="incan-header px-3 py-3 pt-md-5 pd-md-4 mx-auto text-center">
+                    <h1 class="display-4">Incan Gold Assistant</h1>
+                    <p class="lead">Get an edge on your opponents!</p>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 200" style="width:100%; height:100%" id="svgBox">
+                    </svg>
+                </div>
+                <nav class="bg-light sidebar">
+                    <div class="sidebar-sticky">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link active">
+                                    <span data-feather="file"></span>
+                                    Situation analysis
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active">
+                                    <span data-feather="file"></span>
+                                    Game companion
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
                 <div class="card-deck text-center">
                     <div class="card">
                         <div class="card-header">

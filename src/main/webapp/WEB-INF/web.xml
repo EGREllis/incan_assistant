@@ -13,13 +13,24 @@
         <servlet-name>hello</servlet-name>
         <servlet-class>net.assistant.view.servlet.HelloServlet</servlet-class>
     </servlet>
+
     <servlet>
         <servlet-name>welcome</servlet-name>
         <jsp-file>/welcome.jsp</jsp-file>
     </servlet>
 
+    <servlet>
+        <servlet-name>card</servlet-name>
+        <jsp-file>/card.jsp</jsp-file>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>hello</servlet-name>
         <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>card</servlet-name>
+        <url-pattern>/card</url-pattern>
     </servlet-mapping>
 </web-app>

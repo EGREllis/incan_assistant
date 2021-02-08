@@ -17,8 +17,6 @@ https://github.com/spring-projects/spring-boot/blob/v2.0.8.RELEASE/spring-boot-s
 Currently when run:
 2021-01-21 20:35:13.391  WARN 34717 --- [nio-8080-exec-2] o.s.w.s.r.ResourceHttpRequestHandler     : Path with "WEB-INF" or "META-INF": [WEB-INF/jsp/welcome.jsp]
 2021-01-21 20:35:13.391 DEBUG 34717 --- [nio-8080-exec-2] o.s.w.s.r.ResourceHttpRequestHandler     : Resource not found
-
-
  */
 
 @Controller
@@ -31,6 +29,11 @@ public class WebMapping {
         model.put("time", new Date());
         model.put("name", this.message);
         return "welcome";
+    }
+
+    @GetMapping("/card")
+    public String card(Map<String,Object> model) {
+        return "card";
     }
 
     @GetMapping("/main.css")
