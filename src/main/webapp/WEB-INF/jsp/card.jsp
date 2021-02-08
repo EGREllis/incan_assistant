@@ -33,23 +33,26 @@
 
                 var startGameButtonEle = document.getElementById("startGameButton");
                 if (playerNames.length >= 3 && playerNames.length <= 5) {
-                    startGameButton.style.visibility = "visible";
+                    startGameButton.disabled = false;
                 } else {
-                    startGameButton.style.visibility = "hidden";
+                    startGameButton.disabled = true;
                 }
 
                 var addPlayerButtonEle = document.getElementById("addPlayerButton");
                 if (playerNames.length < 5) {
-                    addPlayerButtonEle.style.visibility = "visible";
+                    addPlayerButtonEle.disabled = false;
                 } else {
-                    addPlayerButtonEle.style.visibility = "hidden";
+                    addPlayerButtonEle.disabled = true;
                 }
             }
 
             function addPlayer() {
                 var newPlayerEle = document.getElementById("new_player_name");
-                playerNames[playerNames.length] = newPlayerEle.value;
-                renderPlayers();
+                if (newPlayerEle.value.length > 0) {
+                    playerNames[playerNames.length] = newPlayerEle.value;
+                    newPlayerEle.value = "";
+                    renderPlayers();
+                }
             }
 
             function removePlayer(oldPlayerName) {
@@ -74,7 +77,7 @@
                         <label for="new_player_name" class="sr-only">New player name</label>
                         <input type="text" id="new_player_name" class="form-control mb-3" placeholder="Player name" autofocus>
                         <button class="btn btn-primary btn-lg block" onclick="addPlayer()" id="addPlayerButton">Add Player</button>
-                        <button class="btn btn-primary btn-lg block" onclick="addPlayer()" id="startGameButton" style="visibility:hidden;">Start game</button>
+                        <button class="btn btn-primary btn-lg block" onclick="addPlayer()" id="startGameButton" disabled>Start game</button>
                     </section>
 
                     <div class="card-deck mb-3 text-center" id="player_deck">
