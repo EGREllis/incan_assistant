@@ -30,6 +30,20 @@
 
                 var playerEle = document.getElementById("player_deck");
                 playerEle.innerHTML = playerHtml;
+
+                var startGameButtonEle = document.getElementById("startGameButton");
+                if (playerNames.length >= 3 && playerNames.length <= 5) {
+                    startGameButton.style.visibility = "visible";
+                } else {
+                    startGameButton.style.visibility = "hidden";
+                }
+
+                var addPlayerButtonEle = document.getElementById("addPlayerButton");
+                if (playerNames.length < 5) {
+                    addPlayerButtonEle.style.visibility = "visible";
+                } else {
+                    addPlayerButtonEle.style.visibility = "hidden";
+                }
             }
 
             function addPlayer() {
@@ -52,13 +66,15 @@
     </head>
     <body>
         <main role="main">
-            <form method="GET" onsubmit="return false">
+            <form method="GET" action="start_game" onsubmit="return false">
                 <div class="container">
                     <section class="jumbotron p-3 p-md-5 text-white rounded bg-dark text-center">
                         <h1 class="jumbotron-heading">Compose players</h1>
+                        <p class="lead">Incan gold is a three to five player game.</p>
                         <label for="new_player_name" class="sr-only">New player name</label>
-                        <input type="text" id="new_player_name" class="form-control" placeholder="Player name" autofocus>
+                        <input type="text" id="new_player_name" class="form-control mb-3" placeholder="Player name" autofocus>
                         <button class="btn btn-primary btn-lg block" onclick="addPlayer()" id="addPlayerButton">Add Player</button>
+                        <button class="btn btn-primary btn-lg block" onclick="addPlayer()" id="startGameButton" style="visibility:hidden;">Start game</button>
                     </section>
 
                     <div class="card-deck mb-3 text-center" id="player_deck">
