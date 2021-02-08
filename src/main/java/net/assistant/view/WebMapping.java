@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
@@ -34,6 +35,12 @@ public class WebMapping {
     @GetMapping("/card")
     public String card(Map<String,Object> model) {
         return "card";
+    }
+
+    @PostMapping("/new_assist")
+    public String startAssistant(@RequestParam("players") String players, Map<String,Object> model) {
+        model.put("players", players);
+        return "assist";
     }
 
     @GetMapping("/main.css")
