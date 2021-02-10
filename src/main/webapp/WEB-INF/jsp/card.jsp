@@ -3,6 +3,8 @@
     <head>
         <title>Compose players</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <!-- <link rel="stylesheet" href="main.css" /> -->
+        <script src="main.js"></script>
 
         <script>
             var playerNames = [];
@@ -19,40 +21,28 @@
                 return json;
             }
 
-            function renderPlayer(player) {
-                var pHtml = '<div class="card mb">';
-                pHtml += '<div class="card-header"><h4 class="my-0">'+player+'</h4></div>';
-                pHtml += '<div class="card-body"><ul class="list-unstyled"><li>Gems: 0</li><li>Artifacts: 0</li></ul></div>';
-                pHtml += '<div class="card-footer"><button class="btn btn-secondary btn-lg block" onclick="removePlayer(\''+player+'\')">Remove</button></div>';
-                pHtml += '</div>';
-                return pHtml;
-            }
-
-            function renderPlayers() {
-                var playerHtml = "";
-
-                if (playerNames.length > 0) {
-                    for (var i = 0; i < playerNames.length; i++) {
-                        playerHtml += renderPlayer(playerNames[i]);
-                    }
-                }
-
-                var playerEle = document.getElementById("player_deck");
-                playerEle.innerHTML = playerHtml;
-
+            function toggleStartAssist() {
                 var startGameButtonEle = document.getElementById("startGameButton");
                 if (playerNames.length >= 3 && playerNames.length <= 5) {
                     startGameButton.disabled = false;
                 } else {
                     startGameButton.disabled = true;
                 }
+            }
 
+            function toggleAddPlayer() {
                 var addPlayerButtonEle = document.getElementById("addPlayerButton");
                 if (playerNames.length < 5) {
                     addPlayerButtonEle.disabled = false;
                 } else {
                     addPlayerButtonEle.disabled = true;
                 }
+            }
+
+            function redraw() {
+                renderPlayers()
+                toggleAddPlayer();
+                toggleStartAssist();
             }
 
             function addPlayer() {
@@ -65,7 +55,7 @@
                     newPlayerEle.value = "";
                     newPlayerEle.focus();
                     playerNames.sort();
-                    renderPlayers();
+                    redraw();
                 }
             }
 
@@ -79,7 +69,7 @@
                     var newPlayerEle = document.getElementById("new_player_name");
                     newPlayerEle.focus();
                 }
-                renderPlayers();
+                redraw();
             }
 
             function assistGame() {
