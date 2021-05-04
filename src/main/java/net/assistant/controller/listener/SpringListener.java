@@ -101,6 +101,7 @@ public class SpringListener implements SpringApplicationRunListener {
             }
         } else {
             System.err.println("Desktop and Browse are not supported.  Please visit http://localhost:8080");
+            System.err.println("Alternatively http://localhost:8080/card");
             System.err.flush();
         }
     }

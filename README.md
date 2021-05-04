@@ -11,3 +11,11 @@ Installation Instructions:
 7) Execute the .war file, which will start a web server
 8) Read the log
 9) Open a browser at http://localhost:8080
+
+
+TODO:
+Centre the tableau cards
+Distribute gems to players when a card is played
+Save the gems when a player withdraws
+Disable withdrawn players when a card is drawn
+Graphically represent gems remaining on cards

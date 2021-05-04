@@ -14,6 +14,7 @@
             var serverData = '<c:out value="${players}" />';
 
             var playerNames = "";
+            var round = 1;
 
             var cards =     [1, 2, 3, 4, 5, 7, 9, 11, 13, 14, 15, 17, "H1", "H2", "H3", "H4", "H5", "A1", "A2", "A3", "A4", "A5"];
             var deck =      [0, 1, 2, 3, 4, 5, 6, 7,  8,  9,  10, 11, 12,   13,   14,   15,   16,   17,   18,   19,   20,   21];
@@ -23,12 +24,94 @@
             var gems =      [];
             var playerGems= [];
             var playerMode= [];
+            var playerArtifacts = [];
+            var playerSavedGems = [];
+            var playerSavedArtifacts = [];
+
+            function isGemCard(i) {
+                return cardType[i] == 1;
+            }
+
+            function isHazardCard(i) {
+                return cardType[i] == 2;
+            }
+
+            function isArtifactCard(i) {
+                return cardType[i] == 3;
+            }
+
+            function renderRound() {
+                var roundEle = document.getElementById("roundTitle");
+                var roundHtml = "<h2>Round "+round+"</h2>";
+                roundEle.innerHTML = roundHtml;
+            }
 
             function addCardToTableau(cardIndex) {
+                var excavating = getPlayersThatAreExcavating();
+                var withdrawing = getPlayersThatAreWithdrawn();
+
+                var card = cards[i];
+                var gemRemaining = 0;
+                if (isGemCard(i)) {
+                    var gemSplit = Math.floor(card / excavating.length);
+                    gemRemaining = card - (gemSplit * excavating.length);
+                    for (var j = 0; j < excavating.length; j++) {
+                        playerGems[excavating[j]] += gemSplit;
+                    }
+                } else if (isArtifactCard(i)) {
+                    // Do nothing special
+                } else if (isHazardCard(i)) {
+                    if (tableau.indexOf(i) >= 0) {
+                        // This is the second hazard - the round is over
+                        for (var j = 0; j < excavating.length; j++) {
+                            playerGems[excavating[j]] = 0;
+                            playerGems
+                        }
+                    }
+                }
+
                 quantity[cardIndex] -= 1;
                 tableau[tableau.length] = cardIndex;
-                gems[gems.length] = 0;
+                gems[gems.length] = gemRemaining;
+
                 render();
+            }
+
+            function getPlayersThatAreWithdrawn() {
+                var withdrawn = [];
+                for (var i = 0; i < playerMode.length; i++) {
+                    if (playerMode[i] == "W") {
+                        withdrawn[withdrawn.length] = i;
+                    }
+                }
+                return withdrawn;
+            }
+
+            function processSuccessfulWithdraw(withdrawn) {
+                if (withdrawn.length == 0) {
+                    // Do nothing
+                } else if (withdrawn.length == 1) {
+                    // Award artifacts
+
+                } else {
+                    // No artifacts
+                }
+            }
+
+            function getPlayersThatAreExcavating() {
+                var excavate = [];
+                for (var i = 0; i < playerMode.length; i++) {
+                    if (playerMode[i] == "E") {
+                        excavate[excavate.length] = i;
+                    }
+                }
+                return excavate;
+            }
+
+            function processSuccessfulExcavate(excavate) {
+            }
+
+            function processFailedExcavate(excavate) {
             }
 
             function togglePlayer(playerIndex) {
@@ -90,6 +173,7 @@
             }
 
             function render() {
+                renderRound();
                 renderDeck();
                 renderTableauSvg();
                 renderPlayerInfo();
@@ -111,6 +195,7 @@
     <body onload="unpack()">
         <main role="main">
             <div class="container-fluid">
+                <div class="lead text-center" id="roundTitle"><h2>Round 1</h2></div>
                 <div class="row">
                     <div class="col">
                         <div id="deck"></div>
